@@ -1,0 +1,16 @@
+@import "./ui/tree";
+@import "./ui/context-menu";
+@import "./ui/modal-window";
+
+html {
+  height: 100%;
+
+  body {
+    height: 100%;
+    margin: 0;
+  }
+}
+
+.Application {
+  min-height: 100%;
+}

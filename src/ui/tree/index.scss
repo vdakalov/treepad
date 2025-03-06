@@ -1,0 +1,92 @@
+$tree-node-indent: 1em;
+$tree-node-arrow-scale: 0.8;
+$tree-node-arrow-color: red;
+
+$tree-node-arrow-size-base: $tree-node-arrow-scale * 12px;
+$tree-node-arrow-size-side: $tree-node-arrow-scale * 8px;
+
+@mixin border-arrow() {
+  display: block;
+  content: '';
+
+  width: 0;
+  height: 0;
+}
+
+@function border-arrow-base() {
+  @return $tree-node-arrow-scale * 12;
+}
+
+@mixin border-arrow-parent() {
+  border: 0;
+}
+
+@mixin border-arrow-right() {
+  @include border-arrow-parent;
+  padding-left: 1px;
+  padding-right: 2px;
+
+  &:before {
+    @include border-arrow;
+
+    border-top: $tree-node-arrow-size-side solid transparent;
+    border-left: $tree-node-arrow-size-base solid $tree-node-arrow-color;
+    border-right: 0;
+    border-bottom: $tree-node-arrow-size-side solid transparent;
+  }
+}
+
+@mixin border-arrow-down() {
+  @include border-arrow-parent;
+  padding-top: 1px;
+  padding-bottom: 2px;
+
+  &:before {
+    @include border-arrow;
+
+    border-top: $tree-node-arrow-size-base solid $tree-node-arrow-color;
+    border-left: $tree-node-arrow-size-side solid transparent;
+    border-right: $tree-node-arrow-size-side solid transparent;
+    border-bottom: 0;
+  }
+}
+
+.TreeUi,
+.TreeNodeUi,
+.TreeNodeUi {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.TreeNodeUi {
+  > .TreeNodeToolbarUi {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    > .TreeNodeToolbarItemUi {
+      display: inline-block;
+
+      &.TreeNodeToolbarCollapseButtonUi {
+        button {
+          margin: 0;
+          padding: 0;
+          background-color: initial;
+
+          @include border-arrow-down();
+        }
+      }
+    }
+  }
+
+  > .TreeUi {
+    margin-left: $tree-node-indent !important;
+  }
+
+  &.collapsed {
+    > .TreeNodeToolbarUi > .ArrowButtonToolbarItem button {
+      @include border-arrow-right();
+    }
+  }
+}

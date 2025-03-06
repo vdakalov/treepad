@@ -1,0 +1,40 @@
+.ModalWindow {
+  position: absolute;
+  top: 16%;
+  left: 50%;
+
+  transform: translate(-50%);
+
+  background-color: white;
+  border: 2px solid gray;
+
+  > .ModalWindowHeader {
+    padding: 0.6em;
+
+    > .ModalWindowHeaderTitle {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  > .ModalWindowContent {
+    padding: 0 0.6em;
+  }
+
+  .ModalWindowControls {
+    list-style: none;
+    margin: 1em;
+    padding: 0;
+
+    text-align: right;
+
+    > .ModalWindowControl {
+      display: inline-block;
+      text-align: initial;
+
+      + .ModalWindowControl {
+        margin-left: 0.4em;
+      }
+    }
+  }
+}

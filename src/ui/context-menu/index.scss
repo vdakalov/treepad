@@ -1,0 +1,22 @@
+.ContextMenu {
+  list-style: none;
+
+  min-width: 120px;
+  position: absolute;
+
+  border: 1px solid #c9c9c9;
+  background-color: white;
+
+  padding: 0.4em 0;
+  margin: 0;
+
+  > .Item {
+    &:hover {
+      background-color: #e6e6e6;
+    }
+  }
+
+  > .TextItem {
+    padding: 0.4em 1em;
+  }
+}
