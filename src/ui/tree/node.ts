@@ -23,6 +23,7 @@ export default abstract class TreeNodeUi extends Ui<HTMLLIElement> {
   public collapse(): boolean {
     if (!this.collapsed) {
       this.children.uiNodeRemove();
+      this.uiNodeElement.classList.add('collapsed');
       return true;
     }
     return false;
@@ -31,6 +32,7 @@ export default abstract class TreeNodeUi extends Ui<HTMLLIElement> {
   public expand(): boolean {
     if (this.collapsed) {
       this.children.uiNodeAppendTo(this);
+      this.uiNodeElement.classList.remove('collapsed');
       return true;
     }
     return false;

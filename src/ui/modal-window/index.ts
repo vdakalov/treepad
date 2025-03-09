@@ -3,8 +3,9 @@ import ModalWindowHeader from './header';
 import ModalWindowContent from './content';
 import ModalWindowControl from './controls/control';
 import ModalWindowControls from './controls';
+import { EventArgsMap } from '../../libs/event-emitter';
 
-export default abstract class ModalWindow extends Ui<HTMLDivElement> {
+export default abstract class ModalWindow<E extends EventArgsMap = EventArgsMap> extends Ui<HTMLDivElement, E> {
 
   protected get showed(): boolean {
     return this.uiNodeElement.parentElement !== null;

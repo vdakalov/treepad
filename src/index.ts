@@ -2,7 +2,7 @@ import Ui from './libs/ui';
 import { MenuItem } from './libs/context-menu';
 import Context, { Data as ContextData } from './libs/context';
 
-export default class Application extends Ui<HTMLDivElement> {
+export default class Application extends Ui<HTMLDivElement, any> {
 
   private readonly lsKey: string = 'tree-pad.application.data';
 
@@ -16,6 +16,8 @@ export default class Application extends Ui<HTMLDivElement> {
     this.context.contextMenu.register(this.createGlobalContextMenuItems.bind(this), [
       this.uiNodeElement
     ]);
+
+    window.addEventListener('beforeunload', this.dumpData.bind(this));
   }
 
   private defineData(): ContextData {

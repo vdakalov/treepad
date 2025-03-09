@@ -1,8 +1,9 @@
+import EventEmitter, { EventArgsMap } from '../event-emitter';
 
 /**
  * @see
  */
-export default class Ui<T extends HTMLElement> {
+export default class Ui<T extends HTMLElement, E extends EventArgsMap = EventArgsMap> extends EventEmitter<E> {
 
   public static mount(target: Node, ui: Ui<any>): void {
     ui.uiNodeRemove();
@@ -13,19 +14,20 @@ export default class Ui<T extends HTMLElement> {
 
   public readonly uiNodeElement: T;
 
-  public get uiNodeChildren(): Readonly<Ui<HTMLElement>[]> {
+  public get uiNodeChildren(): Readonly<Ui<HTMLElement, any>[]> {
     return this._uiNodeChildren;
   }
 
-  public get uiNodeParent(): Ui<HTMLElement> | undefined {
+  public get uiNodeParent(): Ui<HTMLElement, any> | undefined {
     return this._uiNodeParent;
   }
 
-  private readonly _uiNodeChildren: Ui<HTMLElement>[] = [];
+  private readonly _uiNodeChildren: Ui<HTMLElement, any>[] = [];
 
-  private _uiNodeParent: Ui<HTMLElement> | undefined = undefined;
+  private _uiNodeParent: Ui<HTMLElement, any> | undefined = undefined;
 
   constructor(tagName: keyof HTMLElementTagNameMap) {
+    super();
     this.uiNodeElement = window.document.createElement(tagName) as T;
     this.uiNodeElement.className = this
       .uiNodeGetAscendantsPrototypes()
@@ -59,7 +61,7 @@ export default class Ui<T extends HTMLElement> {
     return this;
   }
 
-  public uiNodeAppend<T extends Ui<HTMLElement>>(node: T, before?: Ui<HTMLElement> | number): T {
+  public uiNodeAppend<T extends Ui<HTMLElement, any>>(node: T, before?: Ui<HTMLElement, any> | number): T {
     if (typeof before === 'number' && this.uiNodeElement.children.length > before) {
       this.uiNodeElement.insertBefore(node.uiNodeElement, this.uiNodeElement.children.item(before));
       this._uiNodeChildren.splice(before, 0, node);
@@ -77,7 +79,7 @@ export default class Ui<T extends HTMLElement> {
     return node;
   }
 
-  public uiNodeAppendAll<T extends Ui<HTMLElement>>(nodes: T[], before?: Ui<HTMLElement> | number): T[] {
+  public uiNodeAppendAll<T extends Ui<HTMLElement, any>>(nodes: T[], before?: Ui<HTMLElement, any> | number): T[] {
     for (const node of nodes) {
       this.uiNodeAppend(node, before);
       if (typeof before === 'number') {
@@ -87,12 +89,12 @@ export default class Ui<T extends HTMLElement> {
     return nodes;
   }
 
-  public uiNodeAppendTo(parent: Ui<HTMLElement>, before?: Ui<HTMLElement> | number): this {
+  public uiNodeAppendTo(parent: Ui<HTMLElement, any>, before?: Ui<HTMLElement, any> | number): this {
     parent.uiNodeAppend(this, before);
     return this;
   }
 
-  public uiNodeRemove(child?: Ui<HTMLElement>): void {
+  public uiNodeRemove(child?: Ui<HTMLElement, any>): void {
     if (child === undefined) {
       if (this.uiNodeParent !== undefined && this.uiNodeElement.parentElement !== null) {
         const index = this.uiNodeParent.uiNodeChildren.indexOf(this);

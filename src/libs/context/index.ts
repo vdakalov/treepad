@@ -5,7 +5,7 @@ import AlertModalWindow from '../modal-windows/alert';
 import ConfirmModalWindow from '../modal-windows/confirm';
 import PromptModalWindow from '../modal-windows/prompt';
 import Schemes, { Data as SchemesData } from './schemes';
-import * as utils from '../utils';
+import SelectModalWindow from '../modal-windows/select';
 
 export type Data = {
   version: number;
@@ -21,6 +21,7 @@ export default class Context {
   public alert: AlertModalWindow = new AlertModalWindow();
   public confirm: ConfirmModalWindow = new ConfirmModalWindow();
   public prompt: PromptModalWindow = new PromptModalWindow();
+  public select: SelectModalWindow = new SelectModalWindow();
 
   public data: Data;
 
@@ -35,9 +36,5 @@ export default class Context {
     this.data = data;
 
     this.schemes = new Schemes(this.data.schemes, this);
-  }
-
-  public createMr36(): string {
-    return utils.createMr36();
   }
 }

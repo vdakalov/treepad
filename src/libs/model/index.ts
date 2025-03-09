@@ -1,5 +1,4 @@
 import EventEmitter, { EventArgsMap } from '../event-emitter';
-import { createMr36 } from '../utils';
 
 export type InformationData<N extends string = string> = {
   name: N;
@@ -21,8 +20,4 @@ export default abstract class Model<D, E extends EventArgsMap> extends EventEmit
    * @protected
    */
   protected onModelDataDefined(): void {}
-
-  public createMr36(): string {
-    return createMr36();
-  }
 }

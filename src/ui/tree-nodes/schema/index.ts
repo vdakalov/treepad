@@ -1,21 +1,69 @@
 import ModelTreeNodeUi from '../../tree-nodes/model';
 import SchemaModel, { Event } from '../../../models/schema';
+import SchemaNodeModel from '../../../models/schema-node';
+import { MenuItem } from '../../../libs/context-menu';
+import SchemaNodeTreeNodeUi from '../schema-node';
+import { createMrs36 } from '../../../libs/utils';
 
 export default class SchemaTreeNodeUi extends ModelTreeNodeUi<SchemaModel> {
 
-  public modelTreeNodeUiInit() {
-    this.toolbar.label.text = this.model.data.name;
-    // this.toolbar.label.uiNodeElement.title = this.model.data.description || '';
-
-    this.model.ee.on(Event.NodeAppended, this.uiUpdate.bind(this));
-    this.uiUpdate();
+  private onContextMenuNewNode(): void {
+    this.context.prompt.open('New node', 'Enter new node name:', 'New node', name => {
+      if (name !== undefined && name.length !== 0) {
+        const nodeModel = new SchemaNodeModel({
+          id: createMrs36(),
+          name
+        }, this.model);
+        this.model.appendNode(nodeModel);
+      }
+    });
   }
 
-  public uiUpdate(): void {
-    this.toolbar.label.text = this.model.data.name;
-    this.children.uiNodeRemoveAll();
-    // for (const node of this.model.nodes) {
-    //   const child = // todo finish here
-    // }
+  private onContextMenuRename(): void {
+    this.context.prompt.open('Rename schema', 'Enter new schema name:', this.model.name, name => {
+      if (name !== undefined && name.length !== 0) {
+        this.model.name = name;
+      }
+    });
   }
+
+  private onNameChanged(newName: string, previousName: string): void {
+    this.toolbar.label.text = this.model.name;
+  }
+
+  private onNodeAppended(model: SchemaNodeModel): void {
+    const ui = new SchemaNodeTreeNodeUi(model, this.context);
+    this.children.uiNodeAppend(ui);
+  }
+
+  protected onModelDefined() {
+    // set node label
+    this.toolbar.label.text = this.model.name;
+
+    // listen for model updates
+    this.model
+      .on(Event.NodeAppended, this.onNodeAppended.bind(this))
+      .on(Event.NameChanged, this.onNameChanged.bind(this));
+
+    // create existent nodes
+    for (const data of this.model.data.nodes) {
+      const model = new SchemaNodeModel(data, this.model);
+      const ui = new SchemaNodeTreeNodeUi(model, this.context);
+      this.children.uiNodeAppend(ui);
+    }
+
+    // define context menu
+    this.enableToolbarLabelContextMenu();
+  }
+
+  protected onToolbarLabelContextMenu(): MenuItem[] {
+    return [{
+      text: 'New node',
+      handler: this.onContextMenuNewNode.bind(this)
+    }, {
+      text: 'Rename',
+      handler: this.onContextMenuRename.bind(this)
+    }];
+  }
+
 }

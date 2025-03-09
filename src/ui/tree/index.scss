@@ -85,7 +85,7 @@ $tree-node-arrow-size-side: $tree-node-arrow-scale * 8px;
   }
 
   &.collapsed {
-    > .TreeNodeToolbarUi > .ArrowButtonToolbarItem button {
+    > .TreeNodeToolbarUi > .TreeNodeToolbarCollapseButtonUi button {
       @include border-arrow-right();
     }
   }

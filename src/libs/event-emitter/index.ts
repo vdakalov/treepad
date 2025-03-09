@@ -30,7 +30,10 @@ export default class EventEmitter<M extends EventArgsMap<string | symbol | numbe
   public emit<K extends keyof M>(event: K, ...args: M[K]): this {
     const handlers = this.eventEmitterDefineEventListeners(event)
       .map(({ handler }) => handler) as Handler<M[keyof M]>[];
-    setTimeout(this.eventEmitterTick.bind(this, handlers, args), 0);
+    if (handlers.length !== 0) {
+      console.debug(EventEmitter.name, this.constructor.name, `emit ${String(event)}`, ...args);
+      setTimeout(this.eventEmitterTick.bind(this, handlers, args), 0);
+    }
     return this;
   }
 

@@ -5,13 +5,6 @@ import { MenuItem } from '../../../libs/context-menu';
 
 export default class SchemesTreeNodeUi extends ModelTreeNodeUi<SchemesModel> {
 
-  private readonly contextMenuItems: MenuItem[] = [
-    {
-      text: 'New schema',
-      handler: this.onNewSchemaActivated.bind(this)
-    }
-  ];
-
   private onNewSchemaActivated(): void {
     this.context.prompt.open('New schema', 'Enter schema name:', 'New Schema', name => {
       if (name !== undefined && name.length !== 0) {
@@ -20,7 +13,7 @@ export default class SchemesTreeNodeUi extends ModelTreeNodeUi<SchemesModel> {
     });
   }
 
-  public modelTreeNodeUiInit() {
+  protected onModelDefined(): void {
     // set node label
     this.toolbar.label.text = 'schemes';
 
@@ -37,8 +30,15 @@ export default class SchemesTreeNodeUi extends ModelTreeNodeUi<SchemesModel> {
     });
 
     // define context menu
-    this.context.contextMenu.register(() => this.contextMenuItems, [
-      this.toolbar.label.uiNodeElement
-    ]);
+    this.enableToolbarLabelContextMenu();
+  }
+
+  protected onToolbarLabelContextMenu(): MenuItem[] {
+    return [
+      {
+        text: 'New schema',
+        handler: this.onNewSchemaActivated.bind(this)
+      }
+    ];
   }
 }
