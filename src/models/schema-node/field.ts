@@ -3,7 +3,13 @@ import Model, { InformationData } from '../../libs/model';
 export type EventArgsMap = {};
 
 export type Data<T> = InformationData & {
+  /**
+   * Default value
+   */
   dv?: T;
+  /**
+   * Current value
+   */
   cv?: T;
 };
 
