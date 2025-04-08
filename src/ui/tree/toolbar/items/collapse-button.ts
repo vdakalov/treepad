@@ -1,4 +1,3 @@
-import EventEmitter from '../../../../libs/event-emitter';
 import TreeNodeToolbarItemUi from '../item';
 
 export enum Event {
@@ -9,18 +8,12 @@ export type EventArgsMap = {
   [Event.Activate]: [event: MouseEvent];
 };
 
-export default class TreeNodeToolbarCollapseButtonUi extends TreeNodeToolbarItemUi<HTMLButtonElement> {
-
-  public ee: EventEmitter<EventArgsMap> = new EventEmitter();
+export default class TreeNodeToolbarCollapseButtonUi extends TreeNodeToolbarItemUi<HTMLButtonElement, EventArgsMap> {
 
   constructor() {
     super('button');
-    this.itemElement.addEventListener('click', event =>
-      this.ee.emit(Event.Activate, event));
-  }
-
-  public setActivationHandler(handler: (...args: EventArgsMap[Event.Activate]) => void): this {
-    this.ee.on(Event.Activate, handler);
-    return this;
+    this.itemElement.addEventListener('click', event => {
+      this.emit(Event.Activate, event);
+    });
   }
 }

@@ -1,6 +1,7 @@
 import Ui from '../../libs/ui';
 import TreeUi from './index';
 import TreeNodeToolbarUi from './toolbar';
+import { Event } from './toolbar/items/collapse-button';
 
 export default abstract class TreeNodeUi extends Ui<HTMLLIElement> {
 
@@ -17,7 +18,7 @@ export default abstract class TreeNodeUi extends Ui<HTMLLIElement> {
   constructor() {
     super('li');
     this.toolbar.collapseButton
-      .setActivationHandler(this.toggleCollapseState.bind(this, undefined));
+      .on(Event.Activate, this.toggleCollapseState.bind(this, undefined));
   }
 
   public collapse(): boolean {

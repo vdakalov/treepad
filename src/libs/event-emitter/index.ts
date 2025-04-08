@@ -49,7 +49,7 @@ export default class EventEmitter<M extends EventArgsMap = EventArgsMap> {
     return this;
   }
 
-  public on<K extends keyof M>(event: K, handler: Listener<M[K]>['handler'], ttl: number = 0): this {
+  public on<K extends keyof M>(event: K, handler: Listener<M[K]>['handler'], ttl: number = -1): this {
     this.eventEmitterDefineEventListener(event)
       .push({ ttl, handler });
     return this;

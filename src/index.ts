@@ -2,7 +2,7 @@ import Ui from './libs/ui';
 import { MenuItem } from './libs/context-menu';
 import Context, { Data as ContextData } from './libs/context';
 
-export default class Application extends Ui<HTMLDivElement, any> {
+export default class Application extends Ui<HTMLDivElement> {
 
   private readonly lsKey: string = 'tree-pad.application.data';
 

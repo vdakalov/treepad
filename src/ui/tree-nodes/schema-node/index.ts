@@ -1,9 +1,10 @@
 import ModelTreeNodeUi from '../model';
 import SchemaNodeModel, { Event } from '../../../models/schema-node';
 import { MenuItem } from '../../../libs/context-menu';
-import RestrictionsSchemaNodeTreeNodeUi from './restriction';
+import RestrictionsSchemaNodeTreeNodeUi from '../schema-node-restriction';
 import Context from '../../../libs/context';
 import { Option } from '../../html/select';
+import RestrictionSchemaNodeTreeNodeUi from '../schema-node-restriction/node';
 
 export default class SchemaNodeTreeNodeUi extends ModelTreeNodeUi<SchemaNodeModel> {
 
@@ -34,13 +35,28 @@ export default class SchemaNodeTreeNodeUi extends ModelTreeNodeUi<SchemaNodeMode
   }
 
   private onAddNodeToParentsRestrictions(): void {
-    const options: Option[] = this.model.schema.nodes
-      .map(node => ({ value: node.id, text: node.name }));
+    const options: Option[] = [];
+    const map: Record<string, SchemaNodeModel> = {};
+    for (const node of this.model.schema.nodes) {
+      if (node.id !== this.model.id) {
+        options.push({ value: node.id, text: node.name });
+        map[node.id] = node;
+      }
+    }
+    if (options.length === 0) {
+      this.context.alert.open('Select parents restriction node', 'No other nodes to select');
+      return;
+    }
     this.context.select.open(
       'Select parents restriction node',
       'Select node to restrict possible parent:',
       0, options, value => {
-        console.log('SELECTED', { value });
+        if (value !== undefined && map[value] !== undefined) {
+          const model = map[value];
+          const node = new RestrictionSchemaNodeTreeNodeUi(model)
+            .uiNodeAppendTo(this.parentRestrictions.children);
+          // debugger;
+        }
       });
 
   }

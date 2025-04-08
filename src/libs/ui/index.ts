@@ -1,5 +1,10 @@
 import EventEmitter, { EventArgsMap } from '../event-emitter';
 
+const excludedAscendantsPrototypes: Function[] = [
+  Object,
+  EventEmitter
+];
+
 /**
  * @see
  */
@@ -39,7 +44,9 @@ export default class Ui<T extends HTMLElement, E extends EventArgsMap = EventArg
     const objects: Object[] = [];
     let proto: Object = this;
     while ((proto = Object.getPrototypeOf(proto)) !== null && proto.constructor !== Object) {
-      objects.push(proto);
+      if (excludedAscendantsPrototypes.indexOf(proto.constructor) === -1) {
+        objects.push(proto);
+      }
     }
     return objects;
   }
