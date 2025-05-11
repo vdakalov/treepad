@@ -20,4 +20,8 @@ export default abstract class Model<D, E extends EventArgsMap> extends EventEmit
    * @protected
    */
   protected onModelDataDefined(): void {}
+
+  public toString(): string {
+    return this.constructor.name;
+  }
 }

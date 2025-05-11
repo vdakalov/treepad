@@ -31,12 +31,12 @@ export default class EventEmitter<M extends EventArgsMap = EventArgsMap> {
   public emit<K extends keyof M>(event: K, ...args: M[K]): this {
     const listeners = this.eventEmitterDefineEventListener(event);
     for (let index = 0; index < listeners.length; index++) {
-      const handler = listeners[index];
-      if (handler.ttl > 0) {
-        handler.ttl--;
-      }
-      if (handler.ttl === 0) {
-        listeners.splice(index--, 1);
+      const listener = listeners[index];
+      if (listener.ttl > 0) {
+        listener.ttl--;
+        if (listener.ttl === 0) {
+          listeners.splice(index--, 1);
+        }
       }
     }
     if (listeners.length !== 0) {

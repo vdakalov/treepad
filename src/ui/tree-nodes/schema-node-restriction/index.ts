@@ -1,8 +1,19 @@
-import Restrictions from '../../../libs/restrictions';
 import SchemaNodeModel from '../../../models/schema-node';
 import TreeNodeUi from '../../tree/node';
+import Context from '../../../libs/context';
+import { MenuItem } from '../../../libs/context-menu';
+import SchemaNodeRestrictions from '../../../models/schema-node/restrictions';
+import RestrictionSchemaNodeTreeNodeUi from './node';
 
-export default class RestrictionsSchemaNodeTreeNodeUi extends TreeNodeUi {
+export enum Event {
+  NodeAdded = 'NodeAdded'
+}
+
+type EventArgsMap = {
+  [Event.NodeAdded]: [node: SchemaNodeModel]
+};
+
+export default class RestrictionsSchemaNodeTreeNodeUi extends TreeNodeUi<EventArgsMap> {
 
   public get label(): string {
     return this.toolbar.label.text;
@@ -12,11 +23,40 @@ export default class RestrictionsSchemaNodeTreeNodeUi extends TreeNodeUi {
     this.toolbar.label.text = value;
   }
 
-  public readonly restrictions: Restrictions<SchemaNodeModel> | undefined;
+  private readonly context: Context;
 
-  constructor(label: string, restrictions?: Restrictions<SchemaNodeModel>) {
+  private readonly restrictions: SchemaNodeRestrictions;
+
+  private readonly model: SchemaNodeModel;
+
+  constructor(context: Context, restrictions: SchemaNodeRestrictions, model: SchemaNodeModel, label: string) {
     super();
-    this.label = label;
+    this.context = context;
     this.restrictions = restrictions;
+    this.model = model;
+    this.label = label;
+
+    this.context.contextMenu
+      .register(this.onLabelContextMenu.bind(this), [this.toolbar.label.uiNodeElement]);
+  }
+
+  private onLabelContextMenu(): MenuItem[] {
+    return [{
+      text: 'Add node',
+      handler: this.onAddNodeToRestrictions.bind(this),
+    }];
+  }
+
+  private onAddNodeToRestrictions(): void {
+    this.context.ui
+      .chooseSchemaNode(this.model.schema, [this.model])
+      .then(node => {
+        if (node !== undefined) {
+          this.restrictions.addSchemaNode(node);
+          this.children
+            .uiNodeAppend(new RestrictionSchemaNodeTreeNodeUi(node));
+          this.emit(Event.NodeAdded, node);
+        }
+      });
   }
 }

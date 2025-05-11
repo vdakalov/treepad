@@ -2,8 +2,9 @@ import Ui from '../../libs/ui';
 import TreeUi from './index';
 import TreeNodeToolbarUi from './toolbar';
 import { Event } from './toolbar/items/collapse-button';
+import { EventArgsMap } from '../../libs/event-emitter';
 
-export default abstract class TreeNodeUi extends Ui<HTMLLIElement> {
+export default abstract class TreeNodeUi<E extends EventArgsMap = EventArgsMap> extends Ui<HTMLLIElement, E> {
 
   public readonly toolbar: TreeNodeToolbarUi = new TreeNodeToolbarUi()
     .uiNodeAppendTo(this);

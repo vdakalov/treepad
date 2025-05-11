@@ -1,29 +1,29 @@
 import ModelTreeNodeUi from '../model';
-import SchemaNodeModel, { Event } from '../../../models/schema-node';
+import SchemaNodeModel, { Event as SchemaNodeModelEvent } from '../../../models/schema-node';
 import { MenuItem } from '../../../libs/context-menu';
-import RestrictionsSchemaNodeTreeNodeUi from '../schema-node-restriction';
+import RestrictionsSchemaNodeTreeNodeUi, { Event as RestrictionsEvent } from '../schema-node-restriction';
 import Context from '../../../libs/context';
-import { Option } from '../../html/select';
-import RestrictionSchemaNodeTreeNodeUi from '../schema-node-restriction/node';
 
 export default class SchemaNodeTreeNodeUi extends ModelTreeNodeUi<SchemaNodeModel> {
 
-  private parentRestrictions: RestrictionsSchemaNodeTreeNodeUi
-    = new RestrictionsSchemaNodeTreeNodeUi('Parents', this.model.parentsRestrictions);
+  private readonly parentRestrictions: RestrictionsSchemaNodeTreeNodeUi
+    = new RestrictionsSchemaNodeTreeNodeUi(this.context, this.model.parentsRestrictions, this.model, 'Parents')
+    .on(RestrictionsEvent.NodeAdded, this.onRestrictParentNode.bind(this))
+    .uiNodeAppendTo(this.children);
+
+  private readonly childrenRestrictions: RestrictionsSchemaNodeTreeNodeUi
+    = new RestrictionsSchemaNodeTreeNodeUi(this.context, this.model.childrenRestriction, this.model, 'Children')
+    .on(RestrictionsEvent.NodeAdded, this.onRestrictChildNode.bind(this))
+    .uiNodeAppendTo(this.children);
 
   constructor(model: SchemaNodeModel, context: Context) {
     super(model, context);
     this.toolbar.label.text = this.model.data.name;
-    this.children.uiNodeAppend(this.parentRestrictions);
     this.enableToolbarLabelContextMenu();
 
-    this.context.contextMenu.register(this.onParentsRestrictionsContextMenu.bind(this), [
-      this.parentRestrictions.toolbar.label.uiNodeElement
-    ]);
-
     this.model
-      .on(Event.Renamed, this.onRenamed.bind(this))
-      .on(Event.Deleted, this.onDeleted.bind(this));
+      .on(SchemaNodeModelEvent.Renamed, this.onRenamed.bind(this))
+      .on(SchemaNodeModelEvent.Deleted, this.onDeleted.bind(this));
   }
 
   private onRenamed(): void {
@@ -32,33 +32,6 @@ export default class SchemaNodeTreeNodeUi extends ModelTreeNodeUi<SchemaNodeMode
 
   private onDeleted(): void {
     this.uiNodeRemove();
-  }
-
-  private onAddNodeToParentsRestrictions(): void {
-    const options: Option[] = [];
-    const map: Record<string, SchemaNodeModel> = {};
-    for (const node of this.model.schema.nodes) {
-      if (node.id !== this.model.id) {
-        options.push({ value: node.id, text: node.name });
-        map[node.id] = node;
-      }
-    }
-    if (options.length === 0) {
-      this.context.alert.open('Select parents restriction node', 'No other nodes to select');
-      return;
-    }
-    this.context.select.open(
-      'Select parents restriction node',
-      'Select node to restrict possible parent:',
-      0, options, value => {
-        if (value !== undefined && map[value] !== undefined) {
-          const model = map[value];
-          const node = new RestrictionSchemaNodeTreeNodeUi(model)
-            .uiNodeAppendTo(this.parentRestrictions.children);
-          // debugger;
-        }
-      });
-
   }
 
   private onContextMenuRename(): void {
@@ -77,11 +50,12 @@ export default class SchemaNodeTreeNodeUi extends ModelTreeNodeUi<SchemaNodeMode
     })
   }
 
-  private onParentsRestrictionsContextMenu(): MenuItem[] {
-    return [{
-      text: 'Add node',
-      handler: this.onAddNodeToParentsRestrictions.bind(this),
-    }];
+  private onRestrictParentNode(model: SchemaNodeModel): void {
+    this.model.parentsRestrictions.addSchemaNode(model);
+  }
+
+  private onRestrictChildNode(model: SchemaNodeModel): void {
+    this.model.childrenRestriction.addSchemaNode(model);
   }
 
   protected onToolbarLabelContextMenu(): MenuItem[] {

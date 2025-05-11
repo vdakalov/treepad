@@ -1,5 +1,34 @@
-# script-studio
-Web application to make design of script application
+# treepad
+Operation system for trees
+
+## Processes
+
+#### Create schema
+Application's user have to create own schema for his purposes.
+
+To reach it the user should:
+1. Call context menu with right mouse click on `schemes` node
+2. Hit `New schema` option in context menu
+3. Enter new schema name in popup prompt window and confirm it
+4. New and empty user's schema has been created
+
+#### Create schema node
+Application's user have to create a set of schema's nodes.
+
+1. Call context menu on any schema's node
+2. Hit `New node` option in context menu
+3. Enter new node name in popup prompt window and confirm it
+4. New schema's node has been created then
+
+#### Define schema restrictions
+Schema's node restrictions define the node behaviour in two ways:
+1. Which another schema's nodes may be parent of the node
+2. Which another schema's nodes may be children of the node
+
+## Entities
+
+#### Custom node
+Custom node is a target for application's user
 
 ## Directories
 

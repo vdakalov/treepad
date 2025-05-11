@@ -59,6 +59,12 @@ export default class SchemaModel extends Model<Data, EventArgsMap> {
     }
   }
 
+  public resolveReferences(): void {
+    for (const node of this.nodes) {
+      node.resolveReferences();
+    }
+  }
+
   public appendNode(node: SchemaNodeModel): this {
     this.data.nodes.push(node.data);
     this.nodes.push(node);
@@ -94,5 +100,18 @@ export default class SchemaModel extends Model<Data, EventArgsMap> {
     this.roots.push(node);
     this.emit(Event.RootNodeAppended, node);
     return this;
+  }
+
+  public getNodeById(id: string): SchemaNodeModel | undefined {
+    return this.nodes.find(node => node.id === id);
+  }
+
+  public indexOfNode(node: SchemaNodeModel): number {
+    return this.nodes
+      .findIndex(({ id }) => id === node.id);
+  }
+
+  public toString(): string {
+    return `${super.toString()}#${this.id}/${this.name}`;
   }
 }

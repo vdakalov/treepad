@@ -4,6 +4,7 @@ import SchemaNodeModel from '../../../models/schema-node';
 import { MenuItem } from '../../../libs/context-menu';
 import SchemaNodeTreeNodeUi from '../schema-node';
 import { createMrs36 } from '../../../libs/utils';
+import Method from '../../../libs/restrictions/method';
 
 export default class SchemaTreeNodeUi extends ModelTreeNodeUi<SchemaModel> {
 
@@ -12,7 +13,17 @@ export default class SchemaTreeNodeUi extends ModelTreeNodeUi<SchemaModel> {
       if (name !== undefined && name.length !== 0) {
         const nodeModel = new SchemaNodeModel({
           id: createMrs36(),
-          name
+          name,
+          restrictions: {
+            parents: {
+              method: Method.Deny,
+              items: []
+            },
+            children: {
+              method: Method.Deny,
+              items: []
+            }
+          }
         }, this.model);
         this.model.appendNode(nodeModel);
       }

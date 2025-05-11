@@ -89,4 +89,20 @@ $tree-node-arrow-size-side: $tree-node-arrow-scale * 8px;
       @include border-arrow-right();
     }
   }
+
+  &.SchemesTreeNodeUi > .TreeNodeToolbarUi .TreeNodeToolbarLabelUi span {
+    color: #606060;
+  }
+
+  &.SchemaTreeNodeUi > .TreeNodeToolbarUi .TreeNodeToolbarLabelUi span {
+    font-weight: bold;
+  }
+
+  &.SchemaNodeTreeNodeUi > .TreeNodeToolbarUi .TreeNodeToolbarLabelUi span {
+  }
+
+  &.RestrictionsSchemaNodeTreeNodeUi > .TreeNodeToolbarUi .TreeNodeToolbarLabelUi span {
+    font-style: italic;
+    color: #606060;
+  }
 }

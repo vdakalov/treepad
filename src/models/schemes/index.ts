@@ -14,13 +14,21 @@ export type Data = SchemaData[];
 
 export default class SchemesModel extends Model<Data, EventArgsMap> {
 
-  public readonly schemaModels: SchemaModel[] = [];
+  public readonly schemaModels: SchemaModel[] = this.initializeSchemaModels();
 
   constructor(data: Data) {
     super(data);
-    for (const data of this.data) {
-      const schemaModel = new SchemaModel(data);
-      this.schemaModels.push(schemaModel);
+    this.resolveReferences();
+  }
+
+  private initializeSchemaModels(): SchemaModel[] {
+    return this.data
+      .map(data => new SchemaModel(data));
+  }
+
+  private resolveReferences(): void {
+    for (const model of this.schemaModels) {
+      model.resolveReferences();
     }
   }
 

@@ -6,6 +6,7 @@ import ConfirmModalWindow from '../modal-windows/confirm';
 import PromptModalWindow from '../modal-windows/prompt';
 import Schemes, { Data as SchemesData } from './schemes';
 import SelectModalWindow from '../modal-windows/select';
+import UiUtils from '../utils/ui-utils';
 
 export type Data = {
   version: number;
@@ -22,6 +23,8 @@ export default class Context {
   public confirm: ConfirmModalWindow = new ConfirmModalWindow();
   public prompt: PromptModalWindow = new PromptModalWindow();
   public select: SelectModalWindow = new SelectModalWindow();
+
+  public ui: UiUtils = new UiUtils(this);
 
   public data: Data;
 
