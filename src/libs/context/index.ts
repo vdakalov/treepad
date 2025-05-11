@@ -5,13 +5,14 @@ import AlertModalWindow from '../modal-windows/alert';
 import ConfirmModalWindow from '../modal-windows/confirm';
 import PromptModalWindow from '../modal-windows/prompt';
 import Schemes, { Data as SchemesData } from './schemes';
+import Models, { Data as ModelsData } from './models';
 import SelectModalWindow from '../modal-windows/select';
 import UiUtils from '../utils/ui-utils';
 
 export type Data = {
   version: number;
   schemes: SchemesData;
-  models: unknown[];
+  models: ModelsData;
 };
 
 export default class Context {
@@ -35,9 +36,12 @@ export default class Context {
 
   public schemes: Schemes;
 
+  public models: Models;
+
   constructor(data: Data) {
     this.data = data;
 
-    this.schemes = new Schemes(this.data.schemes, this);
+    this.schemes = new Schemes(this);
+    this.models = new Models(this);
   }
 }

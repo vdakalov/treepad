@@ -10,8 +10,8 @@ export default class Schemes {
 
   public readonly ui: SchemesTreeNodeUi;
 
-  constructor(data: SchemesData, context: Context) {
-    this.model = new SchemesModel(data);
+  constructor(context: Context) {
+    this.model = new SchemesModel(context.data.schemes);
     this.ui = new SchemesTreeNodeUi(this.model, context)
       .uiNodeAppendTo(context.nodes);
   }

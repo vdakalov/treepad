@@ -40,6 +40,10 @@ export default class Restrictions<T> extends Model<Data<T>, EventArgsMap<T>> {
     }
   }
 
+  public get methodName(): string {
+    return Method[this.method];
+  }
+
   public get items(): Readonly<T[]> {
     return this.data.items;
   }
@@ -75,5 +79,9 @@ export default class Restrictions<T> extends Model<Data<T>, EventArgsMap<T>> {
       return true;
     }
     return false;
+  }
+
+  public toggleMethod(force: Method = (this.method + 1) % 2): Method {
+    return this.method = force;
   }
 }

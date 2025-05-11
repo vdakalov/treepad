@@ -38,12 +38,24 @@ export default class RestrictionsSchemaNodeTreeNodeUi extends TreeNodeUi<EventAr
 
     this.context.contextMenu
       .register(this.onLabelContextMenu.bind(this), [this.toolbar.label.uiNodeElement]);
+
+    for (const nid of restrictions.items) {
+      const node = model.schema.getNodeById(nid);
+      if (!node) {
+        throw new Error(`No node found by id: ${nid}`);
+      }
+      this.children
+        .uiNodeAppend(new RestrictionSchemaNodeTreeNodeUi(node));
+    }
   }
 
   private onLabelContextMenu(): MenuItem[] {
     return [{
       text: 'Add node',
       handler: this.onAddNodeToRestrictions.bind(this),
+    }, {
+      text: `Method: ${this.restrictions.methodName}`,
+      handler: this.onSwitchRestrictionMethod.bind(this),
     }];
   }
 
@@ -58,5 +70,9 @@ export default class RestrictionsSchemaNodeTreeNodeUi extends TreeNodeUi<EventAr
           this.emit(Event.NodeAdded, node);
         }
       });
+  }
+
+  private onSwitchRestrictionMethod(): void {
+    this.restrictions.toggleMethod();
   }
 }
