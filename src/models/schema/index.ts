@@ -106,6 +106,14 @@ export default class SchemaModel extends Model<Data, EventArgsMap> {
     return this.nodes.find(node => node.id === id);
   }
 
+  public getEnsureNodeById(id: string): SchemaNodeModel {
+    const node = this.getNodeById(id);
+    if (node === undefined) {
+      throw new ReferenceError(`No schema node found by id: ${id}`);
+    }
+    return node;
+  }
+
   public indexOfNode(node: SchemaNodeModel): number {
     return this.nodes
       .findIndex(({ id }) => id === node.id);

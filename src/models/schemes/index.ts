@@ -32,6 +32,19 @@ export default class SchemesModel extends Model<Data, EventArgsMap> {
     }
   }
 
+  public get(id: string): SchemaModel | undefined {
+    return this.schemaModels.find(schema => schema.id === id);
+  }
+
+  public getEnsure(id: string): SchemaModel {
+    const schema = this.schemaModels
+      .find(schema => schema.id === id);
+    if (schema === undefined) {
+      throw new ReferenceError(`No schema found by id: ${id}`);
+    }
+    return schema;
+  }
+
   public newSchema(name: string, description?: string): SchemaModel {
     const schemaModel = new SchemaModel({
       id: createMrs36(),

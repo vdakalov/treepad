@@ -1,5 +1,8 @@
 import Model, { InformationData } from '../../libs/model';
 import ModelModel from '../model';
+import SchemaModel from '../schema';
+import Context from '../../libs/context';
+import SchemaNodeModel from '../schema-node';
 
 export enum Event {
   ChildAppended = 'ChildAppended',
@@ -11,6 +14,8 @@ export type EventArgsMap = {
 
 export type Data<V = unknown> = InformationData & {
   id: string;
+  schema: string;
+  schemaNode: string;
   children: Data[];
   value: V;
 };
@@ -45,18 +50,31 @@ export default class ModelNodeModel<V = unknown> extends Model<Data<V>, EventArg
     this.data.value = value;
   }
 
+  public get schema(): SchemaModel {
+    return this.context.schemes.model
+      .getEnsure(this.data.schema);
+  }
+
+  public get schemaNode(): SchemaNodeModel {
+    return this.schema
+      .getEnsureNodeById(this.data.schemaNode);
+  }
+
   public parent: ModelNodeModel | undefined;
 
   public readonly children: ModelNodeModel[];
 
   protected readonly model: ModelModel;
 
-  constructor(data: Data<V>, model: ModelModel, parent?: ModelNodeModel<any>) {
+  protected readonly context: Context;
+
+  constructor(context: Context, data: Data<V>, model: ModelModel, parent?: ModelNodeModel<any>) {
     super(data);
+    this.context = context;
     this.model = model;
     this.parent = parent;
     this.children = data.children
-      .map(data => new ModelNodeModel(data, model));
+      .map(data => new ModelNodeModel(this.context, data, model));
   }
 
   public append(node: ModelNodeModel<any>): void {

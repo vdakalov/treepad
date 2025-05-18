@@ -1,11 +1,14 @@
 import Model, { InformationData } from '../../libs/model';
 import ModelNodeModel, { Data as ModelNodeData } from '../model-node';
 import { createMrs36 } from '../../libs/utils';
+import Context from '../../libs/context';
 
 export enum Event {
+  Renamed = 'Renamed',
 }
 
 export type EventArgsMap = {
+  [Event.Renamed]: [newName: string, previousName: string];
 };
 
 export type Data = InformationData & {
@@ -15,8 +18,8 @@ export type Data = InformationData & {
 
 export default class ModelModel extends Model<Data, EventArgsMap> {
 
-  public static create(name: string, description?: string): ModelModel {
-    return new this({
+  public static create(context: Context, name: string, description?: string): ModelModel {
+    return new this(context, {
       id: createMrs36(),
       name, description,
       roots: []
@@ -32,7 +35,11 @@ export default class ModelModel extends Model<Data, EventArgsMap> {
   }
 
   public set name(value: string) {
-    this.data.name = value;
+    if (this.data.name !== value) {
+      const previous = this.data.name;
+      this.data.name = value;
+      this.emit(Event.Renamed, value, previous);
+    }
   }
 
   public get description(): string | undefined {
@@ -45,10 +52,13 @@ export default class ModelModel extends Model<Data, EventArgsMap> {
 
   public readonly roots: ModelNodeModel[];
 
-  constructor(data: Data) {
+  private readonly context: Context;
+
+  constructor(context: Context, data: Data) {
     super(data);
+    this.context = context;
     this.roots = data.roots
-      .map(data => new ModelNodeModel(data, this))
+      .map(data => new ModelNodeModel(this.context, data, this))
   }
 
   public resolveReferences(): void {

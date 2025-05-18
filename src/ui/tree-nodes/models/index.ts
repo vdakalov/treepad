@@ -1,9 +1,9 @@
 import { MenuItem } from '../../../libs/context-menu';
 import ModelsModel, { Event as ModelsModelEvent } from '../../../models/models';
-import ModelTreeNodeUi from '../model';
-import ModelNodeTreeNodeUi from './node';
+import ModelTreeNodeUiNc from '../model';
+import ModelTreeNodeUi from '../model/index';
 
-export default class ModelsTreeNodeUi extends ModelTreeNodeUi<ModelsModel> {
+export default class ModelsTreeNodeUi extends ModelTreeNodeUiNc<ModelsModel> {
 
   private onNewModelActivated(): void {
     this.context.prompt.open('New model', 'Enter model name:', 'New model', name => {
@@ -25,7 +25,7 @@ export default class ModelsTreeNodeUi extends ModelTreeNodeUi<ModelsModel> {
 
     // listen to model updates
     this.model.on(ModelsModelEvent.ModelAppended, model => {
-      const child = new ModelNodeTreeNodeUi(, this.context);
+      const child = new ModelTreeNodeUi(model, this.context);
       this.children.uiNodeAppend(child);
     });
 
